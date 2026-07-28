@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Phone, MapPin, Clock, Send } from 'lucide-react'
 
@@ -15,6 +15,7 @@ function ContactForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const sectionRef = useRef<HTMLElement | null>(null)
 
   const searchParams = useSearchParams()
 
@@ -34,9 +35,25 @@ function ContactForm() {
       }
     }
 
+    const scrollToContact = () => {
+      if (window.location.hash === '#contact') {
+        window.setTimeout(() => {
+          sectionRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
+        }, 100)
+      }
+    }
+
     onHashService()
+    scrollToContact()
     window.addEventListener('hashchange', onHashService)
-    return () => window.removeEventListener('hashchange', onHashService)
+    window.addEventListener('hashchange', scrollToContact)
+    return () => {
+      window.removeEventListener('hashchange', onHashService)
+      window.removeEventListener('hashchange', scrollToContact)
+    }
   }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -66,7 +83,7 @@ function ContactForm() {
   }
 
   return (
-    <section id="contact" className="py-20 sm:py-32 bg-background">
+    <section ref={sectionRef} id="contact" className="scroll-mt-24 py-20 sm:py-32 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Information */}

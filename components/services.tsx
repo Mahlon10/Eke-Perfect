@@ -1,3 +1,5 @@
+'use client'
+
 import {
     Bath,
     Shirt,
@@ -12,10 +14,27 @@ import {
     PartyPopper,
     Trash2,
 } from "lucide-react";
+import { useRouter } from 'next/navigation'
 
 import services from './servicesData'
 
 export default function Services() {
+    const router = useRouter()
+
+    const handleBookNow = (serviceName: string) => {
+        const params = new URLSearchParams({ service: serviceName })
+        const targetUrl = `/?${params.toString()}#contact`
+
+        router.push(targetUrl)
+
+        window.setTimeout(() => {
+            document.getElementById('contact')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            })
+        }, 150)
+    }
+
     return (
         <section id="services" className="py-16 sm:py-28 bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,6 +90,10 @@ export default function Services() {
                                     {/* CTA */}
                                     <a
                                         href={`/?service=${encodeURIComponent(service.name)}#contact`}
+                                        onClick={(event) => {
+                                            event.preventDefault()
+                                            handleBookNow(service.name)
+                                        }}
                                         className="inline-block w-full text-center bg-primary text-primary-foreground py-3 rounded-lg hover:opacity-90 transition-opacity font-semibold"
                                     >
                                         Book Now
