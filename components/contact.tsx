@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Phone, MapPin, Clock, Send } from 'lucide-react'
 
-export default function Contact() {
+function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -250,3 +250,12 @@ export default function Contact() {
     </section>
   )
 }
+
+export default function Contact() {
+  return (
+    <Suspense fallback={<div className="py-20 sm:py-32 bg-background"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">Loading...</div></div>}>
+      <ContactForm />
+    </Suspense>
+  )
+}
+
